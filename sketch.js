@@ -8,64 +8,65 @@ const Bodies=Matter.Bodies;
 var engine, world;
 var ball;
 var wedge;
-var angle=60;
-var wall1,wall2,wall3,wall4;
+var rope;
 function setup() {
   createCanvas(400,400);
   engine=Engine.create();
   world=engine.world;
 
-wall1=new Ground(200,390,400,20);
-wall2= new Ground(390,200,20,400);
-wall3= new Ground(10,200,20,400);
-wall4=new Ground(200,10,400,20);
+
 var ball_options={
     restitution:1,
     friction:0.01
 }
-  ball=Bodies.circle(100,20,40,ball_options);
+  ball=Bodies.circle(200,50,50,ball_options);
   World.add(world,ball);
 
-/*ground_options={
-    isStatic:true
-}
-  ground=Bodies.rectangle(0,380,600,20,ground_options);
-  World.add(world,ground);
+  rope=Matter.Constraint.create({
+    pointA:{x:200,y:20},
+    bodyB:ball,
+    pointB:{x:0,y:0},
+    length:105,
+    stiffness:0.1
+  });
+  World.add(world,rope);
 
-  var ops={
-      isStatic:true
-  }
-  wedge=Bodies.rectangle(100,200,100,20,ops);
-  World.add(world,wedge)
+  ball2=Bodies.circle(200,300,50,ball_options);
+  World.add(world,ball2)
+
+  rope2=Matter.Constraint.create({
+    bodyA:ball,
+    bodyB:ball2,
+    length:150,
+    stiffness:0.01
+  })
+
+  World.add(world,rope2);
   
-
-  wedge2=Bodies.rectangle(200,200,100,20,ops)
-World.add(world,wedge2)*/
+ 
 }
 
 function draw() 
-{background(0)
+{background(20)
     Engine.update(engine);
 
-    wall1.show();
-    wall2.show();
-    wall3.show();
-    wall4.show();
 
+   
 
-   /* Matter.Body.rotate(wedge,angle)
-    push()
-    translate(wedge.position.x,wedge.position.y)
-    rotate(angle)
-    
-    rect(0,0,100,20)
-    pop()
-   angle+=0.05;
-*/
-  ellipse(ball.position.x,ball.position.y,40)
-  //rect(ground.position.x,ground.position.y,600,20);
-  //rect(wedge2.position.x,wedge2.position.y,100,20)
   
+  ellipse(ball.position.x,ball.position.y,50)
+  ellipse(ball2.position.x,ball2.position.y,50)
   
+  stroke("white");
+  line(rope.pointA.x,rope.pointA.y,rope.bodyB.position.x,rope.bodyB.position.y)
+  line(rope2.bodyA.position.x,rope2.bodyA.position.y,rope2.bodyB.position.x,rope2.bodyB.position.y)
+
+  
+}
+
+function keyPressed(){
+  if(keyCode===RIGHT_ARROW){
+    Matter.Body.applyForce(ball,{x:0,y:0},{x:0.09,y:0})
+  }
 }
 
