@@ -6,11 +6,19 @@ var engine, world, backgroundImg;
 var canvas, angle, tower, ground, cannon, boat;
 var balls = [];
 var boats = [];
+var boatAnimation=[];
+var boatSpritedata,boatSpritesheet;
+var brokenBoatAnimation=[];
+var brokenBoatSpritedata,brokenBoatSpritesheet;
 
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
   towerImage = loadImage("./assets/tower.png");
+  boatSpritedata=loadJSON("./assets/boat/boat.json");
+  boatSpritesheet=loadImage("./assets/boat/boat.png");
+  brokenBoatSpritedata=loadJSON("./assets/boat/broken_boat.json");
+  brokenBoatSpritesheet=loadImage("./assets/boat/broken_boat.png");
 }
 
 function setup() {
@@ -22,7 +30,20 @@ function setup() {
   tower = new Tower(width / 2 - 650, height - 290, 250, 580);
   cannon = new Cannon(width / 2 - 600, height / 2 - 220, 120, 40, angle);
 
-  boat = new Boat(width, height - 100, 200, 200, -100);
+ // boat = new Boat(width, height - 100, 200, 200, -100);
+  var boatFrames=boatSpritedata.frames;
+  for(var i=0; i<boatFrames.length; i++){
+    var pos=boatFrames[i].position;
+    var img=boatSpritesheet.get(pos.x,pos.y,pos.w,pos.h);
+    boatAnimation.push(img);
+  }
+
+  var brokenBoatFrames=brokenBoatSpritedata.frames;
+  for(var i=0;i<brokenBoatFrames.length;i++){
+    var pos=brokenBoatFrames[i].position;
+    var img=brokenBoatSpritesheet.get(pos.x,pos.y,pos.w,pos.h);
+    brokenBoatAnimation.push(img);
+  }
   
 }
 
@@ -84,9 +105,18 @@ function showBoats() {
       boats.length < 4 &&
       boats[boats.length - 1].body.position.x < width - 300
     ) {
-      var positions = [-130, -100, -120, -80];
+      var positions = [-40, -60, -70, -20];
       var position = random(positions);
-      var boat = new Boat(width,height - 100, 200, 200, position);
+      var boat = new Boat(
+        width,
+        height - 100,
+        170,
+        170,
+        position,
+        boatAnimation
+      );
+
+
       boats.push(boat);
     }
 
@@ -97,9 +127,11 @@ function showBoats() {
       });
 
       boats[i].display();
+      boats[i].animate();
+     
     }
   } else {
-    var boat = new Boat(width, height - 100, 200, 200, -100);
+    var boat = new Boat(width, height - 60, 170, 170, -60, boatAnimation);
     boats.push(boat);
   }
 }
