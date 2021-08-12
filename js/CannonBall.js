@@ -9,10 +9,12 @@ class CannonBall {
     this.r = 40;
 
     this.body = Bodies.circle(x, y, this.r, options);
-
+    this.speed=0.05
     this.image = loadImage("./assets/cannonball.png");
+    this.animation=[this.image];
     this.tower = loadImage("./assets/gray.jpg");
     this.trajectory = [];
+    this.isSink=false;
     World.add(world, this.body);
   }
 
@@ -26,11 +28,12 @@ class CannonBall {
   display() {
     var angle = this.body.angle;
     var pos = this.body.position;
+    var index=floor(this.speed%this.animation.length);
     push();
     translate(pos.x, pos.y);
     rotate(angle);
     imageMode(CENTER);
-    image(this.image, 0, 0, this.r, this.r);
+    image(this.animation[index], 0, 0, this.r, this.r);
     pop();
 
     if (this.body.velocity.x > 0 && this.body.position.x > 300) {
@@ -42,4 +45,23 @@ class CannonBall {
       image(this.image, this.trajectory[i][0], this.trajectory[i][1], 5, 5);
     }
   }
+  animate(){
+    this.speed+=0.05%1.1;
+  }
+  remove(index){
+    this.isSink=true;
+    Matter.Body.setVelocity(this.body,{x:0,y:0});
+    this.animation=waterSplashAnimation;
+    this.speed=0.05;
+    this.r=150;
+    setTimeout(()=>{
+      World.remove(world,this.body);
+      balls.splice(index,1);
+    }
+    ,1000);
+      
+    }
+
+  
+  
 }

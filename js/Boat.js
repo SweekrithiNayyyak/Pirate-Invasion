@@ -11,6 +11,7 @@ class Boat {
     this.height = height;
     this.boatAnimation=boatAnimation;
     this.speed=0.05;
+    this.isBroken=false;
 
     this.boatPosition = boatPos;
     this.image = loadImage("assets/boat.png");
@@ -20,6 +21,7 @@ class Boat {
 //to remove ships from the world
   remove(index) {
     this.boatAnimation=brokenBoatAnimation;
+    this.isBroken=true;
     this.speed=0.05;
     this.width=300;
     this.height=300;
